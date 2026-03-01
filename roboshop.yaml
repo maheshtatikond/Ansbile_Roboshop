@@ -1,0 +1,42 @@
+- name : create ec2 and r53 records
+  hosts : all
+  connection : local
+  vars:
+    sg_id : sg-060e96adf2fe4b45c
+    ami_id : ami-0220d79f3f480ecf5
+    Instances :
+    -  monogodb
+    -  catalogue
+    Environment : 
+    -  dev
+
+     
+  tasks :
+    - name : create ec2 instance
+      ansible.builtin.ec2:
+       # key_name: "ansible-ec2"
+        #region: "us-east-1"
+        security_group: "{{ sg_id }}"
+        instance_type: "t3.micro"
+        image: "{{ ami_id }}"
+        name: "{{ item }}-{{ Environment }}"
+        tags :
+          Project : "roboshop"
+          Component : "{{ item }}"
+          Environment : "{{ Environment }}"
+          Name : "{{ item }}"
+      loop: "{{ Instances }}"
+      register: ec2_output
+    - name : print ec2 output
+      ansible.builtin.debug:
+        msg: "{{ ec2_output }}"  
+      
+
+    # - name : create r53 record
+    #   ansible.builtin.route53:
+    #     state: present
+    #     zone: "roboshop.com"
+    #     record: "{{ item.public_ip }}"
+    #     type: A
+    #     ttl: 300
+    #   loop: "{{ ec2.instances }}"
