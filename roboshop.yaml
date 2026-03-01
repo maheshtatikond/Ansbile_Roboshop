@@ -5,10 +5,9 @@
     sg_id : sg-060e96adf2fe4b45c
     ami_id : ami-0220d79f3f480ecf5
     Instances :
-    -  monogodb
+    -  mongodb
     -  catalogue
-    Env : 
-    -  dev
+    Env : dev
 
      
   tasks :
@@ -18,7 +17,7 @@
         # region: "us-east-1"
         security_group: "{{ sg_id }}"
         instance_type: "t3.micro"
-        image: "{{ ami_id }}"
+        image_id: "{{ ami_id }}"
         name: "{{ item }}-{{ Env }}"
         tags:
           Project: "roboshop"
