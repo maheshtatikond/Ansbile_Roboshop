@@ -1,5 +1,5 @@
 - name: mongodb configure
-  hosts: mongodb
+  hosts: 13.222.162.18
   become: true
  
   tasks:
@@ -13,13 +13,11 @@
         name: mongodb-org
         state: present
 
-  
-
     - name : replace bind ip address #allow remote access to mongodb
       ansible.builtin.replace:   
         path: /etc/mongod.conf
         regexp: '127.0.0.1'
-        replace: 'bindIp: 0.0.0.0'
+        replace: '0.0.0.0'
 
     - name: start mongodb
       ansible.builtin.service:
