@@ -33,10 +33,10 @@
       
 
     - name : create r53 record
-      ansible.builtin.route53:
+      amazon.aws.route53:
         state: present
         zone: "{{ domain }}"
-        record: "{{ item.item.public_ip }}.{{ Env }}.{{ domain }}" #mongodb-dev.smttechnologies.online
+        record: "{{ item.item }}.{{ Env }}.{{ domain }}" #mongodb-dev.smttechnologies.online
         type: A
         ttl: 1
         value: "{{ item.instances[0].private_ip_address }}" #mongodb-dev.smttechnologies.online will point to private ip address of ec2 instance.Index 0 because we are creating only one instance per component
