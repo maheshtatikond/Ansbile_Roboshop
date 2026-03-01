@@ -36,8 +36,19 @@
       amazon.aws.route53:
         state: present
         zone: "{{ domain }}"
-        record: "{{ item.item }}.{{ Env }}.{{ domain }}" #mongodb-dev.smttechnologies.online
+        record: "{{ item.item }}.{{ Env }}.{{ domain }}" #mongodb-dev.smttechnologies.online, frontend-dev.smttechnologies.online
         type: A
         ttl: 1
         value: "{{ item.instances[0].private_ip_address }}" #mongodb-dev.smttechnologies.online will point to private ip address of ec2 instance.Index 0 because we are creating only one instance per component
       loop: "{{ ec2_output.results }}"
+
+    - name : create r53 record #frontend
+      amazon.aws.route53:
+        state: present
+        zone: "{{ domain }}"
+        record: "roboshop.{{ Env }}.{{ domain }}" #roboshop-dev.smttechnologies.online, frontend-dev.smttechnologies.online
+        type: A
+        ttl: 1
+        value: "{{ item.instances[0].public_ip_address }}" #mongodb-dev.smttechnologies.online will point to private ip address of ec2 instance.Index 0 because we are creating only one instance per component
+      loop: "{{ ec2_output.results }}"  
+      when: item.item == "frontend" # we need public ip address only for catalogue component because it will be accessed by end users. Rest of the components will be accessed by catalogue component using private ip address. Hence we are creating two records for catalogue component one with private ip and another with public ip address. For rest of the components we are creating only one record with private ip address.
